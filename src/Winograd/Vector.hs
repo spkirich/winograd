@@ -3,6 +3,7 @@
 -- | This module defines a non-empty type-safe vector.
 
 module Winograd.Vector
+
   ( -- * Definition
 
     Vector (..)

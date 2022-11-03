@@ -8,6 +8,9 @@ import Test.QuickCheck
 import Winograd.Vector (Vector)
 import qualified Winograd.Vector as Vector
 
+import Winograd.Matrix (Matrix)
+import qualified Winograd.Matrix as Matrix
+
 instance Arbitrary a => Arbitrary (Vector Vector.Z a) where
   arbitrary = Vector.Singleton <$> arbitrary
 
@@ -119,6 +122,71 @@ spec = do
         (v :: Vector Dim Integer)
 
       -> v `Vector.multiply` v >= 0
+
+  describe "matrix addition" $ do
+
+    prop "is commutative" $ \
+
+        (u :: Matrix Dim Dim Integer)
+        (v :: Matrix Dim Dim Integer)
+
+      -> let
+
+          l = u `Matrix.add` v
+          r = v `Matrix.add` u
+
+        in l == r
+
+    prop "is associative" $ \
+
+        (u :: Matrix Dim Dim Integer)
+        (v :: Matrix Dim Dim Integer)
+        (w :: Matrix Dim Dim Integer)
+
+      -> let
+
+          l = u `Matrix.add` (v `Matrix.add` w)
+          r = (u `Matrix.add` v) `Matrix.add` w
+
+        in l == r
+
+    prop "has a neutral element" $ \
+
+        (v :: Matrix Dim Dim Integer)
+
+      -> let
+
+          e = $(Matrix.literal
+              [ [0, 0, 0 :: Integer]
+              , [0, 0, 0 :: Integer]
+              , [0, 0, 0 :: Integer]
+              ]
+            )
+
+          l = v `Matrix.add` e
+          r = e `Matrix.add` v
+
+        in l == v && r == v
+
+    prop "has a negative for every element" $ \
+    
+        (v :: Matrix Dim Dim Integer)
+  
+      -> let
+
+          n = (negate <$>) <$> v
+
+          l = v `Matrix.add` n
+          r = n `Matrix.add` v
+
+          e = $(Matrix.literal
+              [ [0, 0, 0 :: Integer]
+              , [0, 0, 0 :: Integer]
+              , [0, 0, 0 :: Integer]
+              ]
+            )
+
+        in l == e && r == e
 
 main :: IO ()
 main = hspec spec
