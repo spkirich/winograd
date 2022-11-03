@@ -5,19 +5,21 @@ import Test.Hspec.QuickCheck
 
 import Test.QuickCheck
 
+import Winograd
+
 import Winograd.Vector (Vector)
 import qualified Winograd.Vector as Vector
 
 import Winograd.Matrix (Matrix)
 import qualified Winograd.Matrix as Matrix
 
-instance Arbitrary a => Arbitrary (Vector Vector.Z a) where
-  arbitrary = Vector.Singleton <$> arbitrary
+instance Arbitrary a => Arbitrary (Vector Z a) where
+  arbitrary = Singleton <$> arbitrary
 
-instance (Arbitrary a, Arbitrary (Vector n a)) => Arbitrary (Vector (Vector.S n) a) where
-  arbitrary = Vector.Extension <$> arbitrary <*> arbitrary
+instance (Arbitrary a, Arbitrary (Vector n a)) => Arbitrary (Vector (S n) a) where
+  arbitrary = Extension <$> arbitrary <*> arbitrary
 
-type Dim = Vector.S (Vector.S Vector.Z)
+type D = S (S Z)
 
 spec :: Spec
 spec = do
@@ -26,8 +28,8 @@ spec = do
 
     prop "is commutative" $ \
 
-        (u :: Vector Dim Integer)
-        (v :: Vector Dim Integer)
+        (u :: Vector D Integer)
+        (v :: Vector D Integer)
 
       -> let
 
@@ -38,9 +40,9 @@ spec = do
 
     prop "is associative" $ \
 
-        (u :: Vector Dim Integer)
-        (v :: Vector Dim Integer)
-        (w :: Vector Dim Integer)
+        (u :: Vector D Integer)
+        (v :: Vector D Integer)
+        (w :: Vector D Integer)
 
       -> let
 
@@ -51,7 +53,7 @@ spec = do
 
     prop "has a neutral element" $ \
 
-        (v :: Vector Dim Integer)
+        (v :: Vector D Integer)
 
       -> let
 
@@ -64,7 +66,7 @@ spec = do
 
     prop "has a negative for every element" $ \
     
-        (v :: Vector Dim Integer)
+        (v :: Vector D Integer)
   
       -> let
 
@@ -81,8 +83,8 @@ spec = do
 
     prop "is commutative" $ \
 
-        (u :: Vector Dim Integer)
-        (v :: Vector Dim Integer)
+        (u :: Vector D Integer)
+        (v :: Vector D Integer)
 
       -> let
 
@@ -93,9 +95,9 @@ spec = do
 
     prop "is left distributive" $ \
 
-        (u :: Vector Dim Integer)
-        (v :: Vector Dim Integer)
-        (w :: Vector Dim Integer)
+        (u :: Vector D Integer)
+        (v :: Vector D Integer)
+        (w :: Vector D Integer)
 
       -> let
 
@@ -106,9 +108,9 @@ spec = do
 
     prop "is right distributive" $ \
 
-        (u :: Vector Dim Integer)
-        (v :: Vector Dim Integer)
-        (w :: Vector Dim Integer)
+        (u :: Vector D Integer)
+        (v :: Vector D Integer)
+        (w :: Vector D Integer)
 
       -> let
 
@@ -119,7 +121,7 @@ spec = do
 
     prop "is non-negative as a square" $ \
 
-        (v :: Vector Dim Integer)
+        (v :: Vector D Integer)
 
       -> v `Vector.multiply` v >= 0
 
@@ -127,8 +129,8 @@ spec = do
 
     prop "is commutative" $ \
 
-        (u :: Matrix Dim Dim Integer)
-        (v :: Matrix Dim Dim Integer)
+        (u :: Matrix D D Integer)
+        (v :: Matrix D D Integer)
 
       -> let
 
@@ -139,9 +141,9 @@ spec = do
 
     prop "is associative" $ \
 
-        (u :: Matrix Dim Dim Integer)
-        (v :: Matrix Dim Dim Integer)
-        (w :: Matrix Dim Dim Integer)
+        (u :: Matrix D D Integer)
+        (v :: Matrix D D Integer)
+        (w :: Matrix D D Integer)
 
       -> let
 
@@ -152,7 +154,7 @@ spec = do
 
     prop "has a neutral element" $ \
 
-        (v :: Matrix Dim Dim Integer)
+        (v :: Matrix D D Integer)
 
       -> let
 
@@ -170,7 +172,7 @@ spec = do
 
     prop "has a negative for every element" $ \
     
-        (v :: Matrix Dim Dim Integer)
+        (v :: Matrix D D Integer)
   
       -> let
 
