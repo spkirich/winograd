@@ -10,7 +10,11 @@ module Winograd
   , S
   , Z
 
+    -- * Matrix multiplication
+
+  , multiply
+
   ) where
 
-import Winograd.Vector
+import Winograd.Vector hiding (multiply)
 import Winograd.Matrix

@@ -15,6 +15,7 @@ module Winograd.Matrix
     -- * Algebra
 
   , add
+  , multiply
 
   -- * Other functions
 
@@ -48,3 +49,7 @@ transpose (Vector.Singleton (Vector.Singleton x  )) = Vector.Singleton (Vector.S
 transpose (Vector.Singleton (Vector.Extension x v)) = Vector.Extension (Vector.Singleton x) . transpose $ Vector.Singleton v
 
 transpose (Vector.Extension v m) = Vector.zipWith Vector.Extension v $ transpose m
+
+-- | Multiply two matrices with a textbook algorithm.
+multiply :: Num a => Matrix m n a -> Matrix n k a -> Matrix m k a
+multiply m n = fmap (\u -> (\v -> u `Vector.multiply` v) <$> transpose n) m

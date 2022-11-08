@@ -210,5 +210,51 @@ spec = do
 
         in l == r
 
+  describe "matrix multiplication" $ do
+
+    prop "has a neutral element" $ \
+
+        (m :: Matrix D D Integer)
+
+      -> let
+
+          e = $(Matrix.literal
+              [ [1, 0, 0 :: Integer]
+              , [0, 1, 0 :: Integer]
+              , [0, 0, 1 :: Integer]
+              ]
+            )
+
+        in all (== m)
+          [ m `Matrix.multiply` e
+          , e `Matrix.multiply` m
+          ]
+
+    prop "is left distributive" $ \
+
+        (m :: Matrix D D Integer)
+        (n :: Matrix D D Integer)
+        (k :: Matrix D D Integer)
+
+      -> let
+
+          l = m `Matrix.multiply` (n `Matrix.add` k)
+          r = (m `Matrix.multiply` n) `Matrix.add` (m `Matrix.multiply` k)
+
+        in l == r
+
+    prop "is right distributive" $ \
+
+        (m :: Matrix D D Integer)
+        (n :: Matrix D D Integer)
+        (k :: Matrix D D Integer)
+
+      -> let
+
+          l = (m `Matrix.add` n) `Matrix.multiply` k
+          r = (m `Matrix.multiply` k) `Matrix.add` (n `Matrix.multiply` k)
+
+        in l == r
+
 main :: IO ()
 main = hspec spec
