@@ -189,6 +189,26 @@ spec = do
             )
 
         in l == e && r == e
+    
+  describe "transpose of a matrix" $ do
+
+    prop "is involutive" $ \
+
+        (m :: Matrix D D Integer)
+      
+      -> (Matrix.transpose . Matrix.transpose) m == m
+
+    prop "respects addition" $ \
+
+        (m :: Matrix D D Integer)
+        (n :: Matrix D D Integer)
+
+      -> let
+
+          l = Matrix.transpose $ m `Matrix.add` n
+          r = Matrix.transpose m `Matrix.add` Matrix.transpose n
+
+        in l == r
 
 main :: IO ()
 main = hspec spec

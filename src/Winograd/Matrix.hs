@@ -1,4 +1,4 @@
-{-# LANGUAGE TemplateHaskell #-}
+{-# LANGUAGE GADTs, TemplateHaskell #-}
 
 -- | This module defines a non-empty type-safe matrix.
 
@@ -15,6 +15,10 @@ module Winograd.Matrix
     -- * Algebra
 
   , add
+
+  -- * Other functions
+
+  , transpose
 
   ) where
 
@@ -36,3 +40,11 @@ literal ( v : a ) = [| Vector.Extension $(Vector.literal v) $(literal a) |]
 -- | Add two matrices.
 add :: Num a => Matrix m n a -> Matrix m n a -> Matrix m n a
 add = Vector.zipWith Vector.add
+
+-- | Transpose a matrix.
+transpose :: Matrix m n a -> Matrix n m a
+
+transpose (Vector.Singleton (Vector.Singleton x  )) = Vector.Singleton (Vector.Singleton x)
+transpose (Vector.Singleton (Vector.Extension x v)) = Vector.Extension (Vector.Singleton x) . transpose $ Vector.Singleton v
+
+transpose (Vector.Extension v m) = Vector.zipWith Vector.Extension v $ transpose m
