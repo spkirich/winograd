@@ -16,5 +16,5 @@ module Winograd
 
   ) where
 
-import Winograd.Vector hiding (multiply)
+import Winograd.Vector
 import Winograd.Matrix

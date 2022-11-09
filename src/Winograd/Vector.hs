@@ -17,8 +17,10 @@ module Winograd.Vector
 
     -- * Algebra
 
+  , negate
+
   , add
-  , multiply
+  , dot
 
     -- * Other functions
 
@@ -26,12 +28,13 @@ module Winograd.Vector
 
   ) where
 
+import Prelude hiding (negate, zipWith)
+import qualified Prelude
+
 import Data.Traversable
 
 import Language.Haskell.TH
 import Language.Haskell.TH.Syntax
-
-import Prelude hiding (zipWith)
 
 data Z
 data S n
@@ -69,10 +72,14 @@ zipWith :: (a -> b -> c) -> Vector n a -> Vector n b -> Vector n c
 zipWith f (Singleton x  ) (Singleton y  ) = Singleton (f x y)
 zipWith f (Extension x u) (Extension y v) = Extension (f x y) $ zipWith f u v
 
+-- | Negate a vector.
+negate :: Num a => Vector n a -> Vector n a
+negate = fmap Prelude.negate
+
 -- | Add two vectors.
 add :: Num a => Vector n a -> Vector n a -> Vector n a
 add = zipWith (+)
 
--- | Multiply two vectors.
-multiply :: Num a => Vector n a -> Vector n a -> a
-multiply u = sum . zipWith (*) u
+-- | Dot product of two vectors.
+dot :: Num a => Vector n a -> Vector n a -> a
+dot u = sum . zipWith (*) u

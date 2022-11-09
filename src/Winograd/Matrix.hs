@@ -14,14 +14,16 @@ module Winograd.Matrix
 
     -- * Algebra
 
+  , negate
+  , transpose
+
   , add
   , multiply
 
-  -- * Other functions
-
-  , transpose
-
   ) where
+
+import Prelude hiding (negate)
+import qualified Prelude
 
 import Language.Haskell.TH
 import Language.Haskell.TH.Syntax
@@ -38,9 +40,9 @@ literal [       ] = error "the literal is empty"
 literal [ v     ] = [| Vector.Singleton $(Vector.literal v)              |]
 literal ( v : a ) = [| Vector.Extension $(Vector.literal v) $(literal a) |]
 
--- | Add two matrices.
-add :: Num a => Matrix m n a -> Matrix m n a -> Matrix m n a
-add = Vector.zipWith Vector.add
+-- | Negate a matrix.
+negate :: Num a => Matrix m n a -> Matrix m n a
+negate = fmap $ fmap Prelude.negate
 
 -- | Transpose a matrix.
 transpose :: Matrix m n a -> Matrix n m a
@@ -50,6 +52,10 @@ transpose (Vector.Singleton (Vector.Extension x v)) = Vector.Extension (Vector.S
 
 transpose (Vector.Extension v m) = Vector.zipWith Vector.Extension v $ transpose m
 
+-- | Add two matrices.
+add :: Num a => Matrix m n a -> Matrix m n a -> Matrix m n a
+add = Vector.zipWith Vector.add
+
 -- | Multiply two matrices with a textbook algorithm.
 multiply :: Num a => Matrix m n a -> Matrix n k a -> Matrix m k a
-multiply m n = fmap (\u -> (\v -> u `Vector.multiply` v) <$> transpose n) m
+multiply m n = fmap (\u -> (\v -> u `Vector.dot` v) <$> transpose n) m

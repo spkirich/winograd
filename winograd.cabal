@@ -76,6 +76,11 @@ test-suite winograd-test
     main-is:
         Spec.hs
 
+    other-modules:
+        Spec.Common
+      , Spec.Vector
+      , Spec.Matrix
+
     build-depends:
         base       >= 4.7  && < 5
       , hspec      >= 2.8  && < 3
